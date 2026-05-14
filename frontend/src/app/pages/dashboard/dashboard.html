@@ -1,0 +1,89 @@
+<div class="min-h-screen bg-gray-950 text-white">
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+      <a class="block px-4 py-3 rounded-xl bg-blue-600">
+        Dashboard
+      </a>
+
+      <a class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        GPUs
+      </a>
+
+      <a class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Solicitudes
+      </a>
+
+      <a class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Reportes
+      </a>
+    </nav>
+  </aside>
+
+  <main class="ml-64 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold">
+          Panel principal
+        </h2>
+
+        <p class="text-gray-400 mt-1">
+          Bienvenido al sistema de gestión de GPUs
+        </p>
+      </div>
+
+      <button
+        class="bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">
+          GPUs disponibles
+        </p>
+
+        <h3 class="text-4xl font-bold mt-3">
+          {{ availableGpus }}
+        </h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">
+          Solicitudes activas
+        </p>
+
+        <h3 class="text-4xl font-bold mt-3">
+          --
+        </h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">
+          Reportes generados
+        </p>
+
+        <h3 class="text-4xl font-bold mt-3">
+          --
+        </h3>
+      </div>
+    </section>
+
+    <section class="mt-8 bg-gray-900 border border-gray-800 rounded-2xl p-6">
+      <h3 class="text-xl font-semibold mb-4">
+        Resumen del sistema
+      </h3>
+
+      <p class="text-gray-400">
+        Desde este panel se podrá monitorear la disponibilidad de GPUs,
+        gestionar solicitudes de uso, controlar asignaciones y revisar reportes
+        de consumo.
+      </p>
+    </section>
+  </main>
+</div>

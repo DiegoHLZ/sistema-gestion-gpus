@@ -15,4 +15,8 @@ export class GpuService {
   getAllGpus(): Observable<Gpu[]> {
     return this.http.get<Gpu[]>(this.apiUrl);
   }
+
+  createGpu(gpu: any): Observable<Gpu> {
+    return this.http.post<Gpu>(this.apiUrl, gpu);
+  }
 }

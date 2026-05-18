@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { GpuService } from '../../services/gpu.service';
 import { Gpu } from '../../models/gpu.model';
@@ -7,14 +12,32 @@ import { Gpu } from '../../models/gpu.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
+
   gpus: Gpu[] = [];
 
-  constructor(private gpuService: GpuService) {}
+  showCreateModal = false;
+
+  gpuForm;
+
+  constructor(
+    private gpuService: GpuService,
+    private fb: FormBuilder
+  ) {
+
+    this.gpuForm = this.fb.group({
+      name: ['', Validators.required],
+      model: ['', Validators.required],
+      memory: [0, Validators.required],
+      providerCloud: ['', Validators.required],
+      region: ['', Validators.required],
+    });
+
+  }
 
   ngOnInit(): void {
     this.loadGpus();
@@ -24,12 +47,32 @@ export class Dashboard implements OnInit {
     this.gpuService.getAllGpus().subscribe({
       next: (data) => {
         this.gpus = data;
-        console.log(data);
       },
       error: (err) => {
         console.error(err);
       },
     });
+  }
+
+  createGpu() {
+
+    if (this.gpuForm.invalid) return;
+
+    this.gpuService.createGpu(this.gpuForm.value).subscribe({
+      next: () => {
+
+        this.showCreateModal = false;
+
+        this.gpuForm.reset();
+
+        this.loadGpus();
+      },
+
+      error: (err:any) => {
+        console.error(err);
+      },
+    });
+
   }
 
   get availableGpus(): number {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -26,6 +27,7 @@ export class Dashboard implements OnInit {
 
   constructor(
     private gpuService: GpuService,
+    private router: Router,
     private fb: FormBuilder
   ) {
 
@@ -73,6 +75,11 @@ export class Dashboard implements OnInit {
       },
     });
 
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
   get availableGpus(): number {

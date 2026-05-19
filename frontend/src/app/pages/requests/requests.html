@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+
+      <a
+        routerLink="/dashboard"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/requests"
+        class="block px-4 py-3 rounded-xl bg-blue-600"
+      >
+        Solicitudes
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="ml-64 p-8">
+
+    <div class="mb-8">
+
+      <h2 class="text-3xl font-bold">
+        Solicitudes de GPUs
+      </h2>
+
+      <p class="text-gray-400 mt-2">
+        Gestión de solicitudes realizadas por los usuarios
+      </p>
+
+    </div>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+      <div class="flex items-center justify-between mb-6">
+
+        <h3 class="text-2xl font-bold">
+          Solicitudes registradas
+        </h3>
+
+        <span class="text-gray-400">
+          Total: {{ requests.length }}
+        </span>
+
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full text-left">
+
+          <thead>
+
+            <tr class="border-b border-gray-800 text-gray-400">
+
+              <th class="pb-4">Descripción</th>
+              <th class="pb-4">Proyecto</th>
+              <th class="pb-4">Cantidad GPUs</th>
+              <th class="pb-4">Inicio</th>
+              <th class="pb-4">Fin</th>
+              <th class="pb-4">Estado</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let request of requests"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+
+              <td class="py-4">
+                {{ request.description }}
+              </td>
+
+              <td class="py-4">
+                {{ request.projectType }}
+              </td>
+
+              <td class="py-4">
+                {{ request.gpuQuantity }}
+              </td>
+
+              <td class="py-4">
+                {{ request.startDate }}
+              </td>
+
+              <td class="py-4">
+                {{ request.endDate }}
+              </td>
+
+              <td class="py-4">
+
+                <span
+                  class="px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="
+                    request.status === 'PENDING'
+                      ? 'bg-yellow-500/20 text-yellow-400'
+                      : request.status === 'APPROVED'
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'bg-red-500/20 text-red-400'
+                  "
+                >
+                  {{ request.status }}
+                </span>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

@@ -4,6 +4,7 @@ import { Login } from './auth/pages/login/login';
 import { Register } from './auth/pages/register/register';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
+import { Requests } from './pages/requests/requests';
 
 export const routes: Routes = [
   {
@@ -24,5 +25,10 @@ export const routes: Routes = [
     component: Dashboard,
     canActivate: [authGuard],
   },
+  {
+    path: 'requests',
+    component: Requests,
+    canActivate: [authGuard],
+  }
 ];
 

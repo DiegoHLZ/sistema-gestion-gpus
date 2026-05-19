@@ -19,4 +19,12 @@ export class GpuService {
   createGpu(gpu: any): Observable<Gpu> {
     return this.http.post<Gpu>(this.apiUrl, gpu);
   }
+
+  updateGpu(id: number, gpu: any): Observable<Gpu> {
+    return this.http.put<Gpu>(`${this.apiUrl}/${id}`, gpu);
+  }
+
+  deleteGpu(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

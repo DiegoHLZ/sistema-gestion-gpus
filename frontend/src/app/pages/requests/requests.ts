@@ -87,4 +87,27 @@ export class Requests implements OnInit {
       },
     });
   }
+
+  approveRequest(id: number) {
+    this.requestService.approveRequest(id).subscribe({
+      next: () => {
+        this.loadRequests();
+      },
+      error: (err: any) => {
+        console.error(err);
+      },
+    });
+  }
+
+  rejectRequest(id: number) {
+    this.requestService.rejectRequest(id).subscribe({
+      next: () => {
+        this.loadRequests();
+      },
+      error: (err: any) => {
+        console.error(err);
+      },
+    });
+  }
+
 }

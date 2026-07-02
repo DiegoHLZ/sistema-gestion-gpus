@@ -20,6 +20,13 @@ export class RequestService {
   return this.http.post<GpuRequest>(this.apiUrl, request);
   }
 
+  approveRequest(id: number): Observable<GpuRequest> {
+  return this.http.put<GpuRequest>(`${this.apiUrl}/${id}/approve`, {});
+  }
+
+  rejectRequest(id: number): Observable<GpuRequest> {
+    return this.http.put<GpuRequest>(`${this.apiUrl}/${id}/reject`, {});
+  }
 }
 
 

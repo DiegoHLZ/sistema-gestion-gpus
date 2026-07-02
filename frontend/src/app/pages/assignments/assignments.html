@@ -1,0 +1,191 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+  <a
+    routerLink="/dashboard"
+    class="block px-4 py-3 rounded-xl bg-blue-600"
+  >
+    Dashboard
+  </a>
+  <a class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+    GPUs
+  </a>
+  <a
+    routerLink="/requests"
+    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+  >
+    Solicitudes
+  </a>
+  <a
+    routerLink="/assignments"
+    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+  >
+    Asignaciones
+  </a>
+  <a class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+    Reportes
+  </a>
+</nav>
+
+  </aside>
+
+  <main class="ml-64 p-8">
+
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold">Asignaciones de GPU</h2>
+      <p class="text-gray-400 mt-2">
+        Asigna GPUs disponibles a solicitudes previamente aprobadas.
+      </p>
+    </div>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8">
+
+      <h3 class="text-xl font-bold mb-5">Nueva asignación</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div>
+          <label class="block mb-2 text-gray-300">Solicitud aprobada</label>
+
+          <select
+            [(ngModel)]="selectedRequestId"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+          >
+            <option [ngValue]="null">Selecciona una solicitud</option>
+
+            <option *ngFor="let request of requests" [ngValue]="request.id">
+              #{{ request.id }} — {{ request.projectType }} ({{ request.gpuQuantity }} GPU{{ request.gpuQuantity > 1 ? 's' : '' }})
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300">GPU disponible</label>
+
+          <select
+            [(ngModel)]="selectedGpuId"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+          >
+            <option [ngValue]="null">Selecciona una GPU</option>
+
+            <option *ngFor="let gpu of gpus" [ngValue]="gpu.id">
+              {{ gpu.name }} — {{ gpu.model }} — {{ gpu.memory }} GB
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end mt-6">
+        <button
+          (click)="assignGpu()"
+          [disabled]="selectedRequestId === null || selectedGpuId === null"
+          class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+        >
+          Asignar GPU
+        </button>
+      </div>
+
+    </section>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold">Asignaciones registradas</h3>
+
+        <span class="text-gray-400">
+          Total: {{ assignments.length }}
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[1250px] text-left">
+
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400">
+              <th class="pb-4 pr-6">Solicitud</th>
+              <th class="pb-4 pr-6">Proyecto</th>
+              <th class="pb-4 pr-6">GPU</th>
+              <th class="pb-4 pr-6">Proveedor</th>
+              <th class="pb-4 pr-6">Fecha asignación</th>
+              <th class="pb-4 pr-6">Estado</th>
+              <th class="pb-4">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let assignment of assignments"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+
+              <td class="py-4 pr-6 whitespace-nowrap">
+                #{{ assignment.request?.id }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ assignment.request?.projectType }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ assignment.gpu?.name }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ assignment.gpu?.providerCloud }}
+              </td>
+
+              <td class="py-4 pr-6 whitespace-nowrap">
+                {{ assignment.assignmentDate | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td class="py-4 pr-6">
+                <span
+                  class="inline-block px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="assignment.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'"
+                >
+                  {{ assignment.active ? 'ACTIVA' : 'LIBERADA' }}
+                </span>
+              </td>
+
+              <td class="py-4 whitespace-nowrap">
+                <button
+                  *ngIf="assignment.active"
+                  (click)="releaseAssignment(assignment.id)"
+                  class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-sm font-semibold transition"
+                >
+                  Liberar GPU
+                </button>
+
+                <span *ngIf="!assignment.active" class="text-gray-500 text-sm">
+                  Sin acciones
+                </span>
+              </td>
+
+            </tr>
+
+            <tr *ngIf="assignments.length === 0">
+              <td colspan="7" class="py-8 text-center text-gray-500">
+                Aún no existen asignaciones registradas.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

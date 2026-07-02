@@ -1,5 +1,6 @@
 <div class="min-h-screen bg-gray-950 text-white">
 
+  <!-- Sidebar -->
   <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
 
     <h1 class="text-2xl font-bold mb-10">
@@ -26,6 +27,7 @@
 
   </aside>
 
+  <!-- Contenido -->
   <main class="ml-64 p-8">
 
     <div class="mb-8">
@@ -35,7 +37,7 @@
       </h2>
 
       <p class="text-gray-400 mt-2">
-        Gestión de solicitudes realizadas por los usuarios
+        Gestión de solicitudes realizadas por los usuarios.
       </p>
 
     </div>
@@ -48,9 +50,20 @@
           Solicitudes registradas
         </h3>
 
-        <span class="text-gray-400">
-          Total: {{ requests.length }}
-        </span>
+        <div class="flex items-center gap-4">
+
+          <span class="text-gray-400">
+            Total: {{ requests.length }}
+          </span>
+
+          <button
+            (click)="openCreateModal()"
+            class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl font-semibold transition"
+          >
+            Nueva Solicitud
+          </button>
+
+        </div>
 
       </div>
 
@@ -128,5 +141,125 @@
     </section>
 
   </main>
+
+  <!-- Modal Nueva Solicitud -->
+
+  <div
+    *ngIf="showCreateModal"
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+  >
+
+    <div
+      class="bg-gray-900 border border-gray-800 rounded-2xl p-8 w-full max-w-xl"
+    >
+
+      <h3 class="text-2xl font-bold mb-6">
+        Nueva Solicitud GPU
+      </h3>
+
+      <form
+        [formGroup]="requestForm"
+        (ngSubmit)="createRequest()"
+        class="space-y-5"
+      >
+
+        <div>
+
+          <label class="block mb-2 text-gray-300">
+            Descripción
+          </label>
+
+          <input
+            type="text"
+            formControlName="description"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+          />
+
+        </div>
+
+        <div>
+
+          <label class="block mb-2 text-gray-300">
+            Tipo de proyecto
+          </label>
+
+          <input
+            type="text"
+            formControlName="projectType"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+          />
+
+        </div>
+
+        <div>
+
+          <label class="block mb-2 text-gray-300">
+            Cantidad de GPUs
+          </label>
+
+          <input
+            type="number"
+            formControlName="gpuQuantity"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+          />
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+
+          <div>
+
+            <label class="block mb-2 text-gray-300">
+              Fecha inicio
+            </label>
+
+            <input
+              type="date"
+              formControlName="startDate"
+              class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+            />
+
+          </div>
+
+          <div>
+
+            <label class="block mb-2 text-gray-300">
+              Fecha fin
+            </label>
+
+            <input
+              type="date"
+              formControlName="endDate"
+              class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+            />
+
+          </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4">
+
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-5 py-2 rounded-xl bg-gray-700 hover:bg-gray-600 transition"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 font-semibold transition"
+          >
+            Guardar solicitud
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
 
 </div>

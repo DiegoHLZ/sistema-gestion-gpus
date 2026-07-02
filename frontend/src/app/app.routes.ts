@@ -43,5 +43,10 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/reports/reports').then((m) => m.Reports),
   },
+  {
+  path: 'gpus',
+  loadComponent: () =>
+    import('./pages/gpus/gpus').then((m) => m.Gpus),
+  },
 ];
 

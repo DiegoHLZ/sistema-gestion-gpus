@@ -6,10 +6,16 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router,RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { GpuService } from '../../services/gpu.service';
 import { Gpu } from '../../models/gpu.model';
+
+import { RequestService } from '../../services/request.service';
+import { GpuRequest } from '../../models/gpu-request.model';
+
+import { ReportService } from '../../services/report.service';
+import { UsageReport } from '../../models/report.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +26,8 @@ import { Gpu } from '../../models/gpu.model';
 })
 export class Dashboard implements OnInit {
   gpus: Gpu[] = [];
+  requests: GpuRequest[] = [];
+  reports: UsageReport[] = [];
 
   showCreateModal = false;
   showEditModal = false;
@@ -30,6 +38,8 @@ export class Dashboard implements OnInit {
 
   constructor(
     private gpuService: GpuService,
+    private requestService: RequestService,
+    private reportService: ReportService,
     private fb: FormBuilder,
     private router: Router
   ) {
@@ -43,13 +53,41 @@ export class Dashboard implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
     this.loadGpus();
+    this.loadRequests();
+    this.loadReports();
   }
 
   loadGpus() {
     this.gpuService.getAllGpus().subscribe({
       next: (data) => {
         this.gpus = data;
+      },
+      error: (err: any) => {
+        console.error(err);
+      },
+    });
+  }
+
+  loadRequests() {
+    this.requestService.getAllRequests().subscribe({
+      next: (data) => {
+        this.requests = data;
+      },
+      error: (err: any) => {
+        console.error(err);
+      },
+    });
+  }
+
+  loadReports() {
+    this.reportService.getAllReports().subscribe({
+      next: (data) => {
+        this.reports = data;
       },
       error: (err: any) => {
         console.error(err);
@@ -146,5 +184,16 @@ export class Dashboard implements OnInit {
 
   get availableGpus(): number {
     return this.gpus.filter((gpu) => gpu.available).length;
+  }
+
+  get activeRequests(): number {
+    return this.requests.filter(
+      (request) =>
+        request.status === 'PENDING' || request.status === 'APPROVED'
+    ).length;
+  }
+
+  get generatedReports(): number {
+    return this.reports.length;
   }
 }

@@ -32,9 +32,11 @@ export class Login {
 
     this.authService.login(this.loginForm.value as any).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        this.router.navigate(['/dashboard']);
-      },
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('role', response.role);
+
+      this.router.navigate(['/dashboard']);
+    },
       error: () => {
         this.errorMessage = 'Correo o contraseña incorrectos';
       },

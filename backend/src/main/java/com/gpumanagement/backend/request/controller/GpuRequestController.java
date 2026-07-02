@@ -38,6 +38,16 @@ public class GpuRequestController {
         return ResponseEntity.ok(gpuRequestService.updateRequest(id, request));
     }
 
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<GpuRequest> approveRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(gpuRequestService.approveRequest(id));
+    }
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<GpuRequest> rejectRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(gpuRequestService.rejectRequest(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
         gpuRequestService.deleteRequest(id);

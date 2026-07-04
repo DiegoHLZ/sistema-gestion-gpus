@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-gray-950 text-white">
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+    <h1 class="text-2xl font-bold mb-10">GPU Management</h1>
+
+    <nav class="space-y-3">
+      <a class="block px-4 py-3 rounded-xl bg-blue-600">
+        Mi panel
+      </a>
+
+      <a routerLink="/requests" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mis solicitudes
+      </a>
+
+      <a routerLink="/reports" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mis reportes
+      </a>
+    </nav>
+  </aside>
+
+  <main class="ml-64 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold">Panel del cliente</h2>
+        <p class="text-gray-400 mt-1">
+          Bienvenido a tu espacio de solicitudes y reportes GPU.
+        </p>
+      </div>
+
+      <button
+        (click)="logout()"
+        class="bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Mis solicitudes</p>
+        <h3 class="text-4xl font-bold mt-3">--</h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Solicitudes aprobadas</p>
+        <h3 class="text-4xl font-bold mt-3">--</h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Mis reportes</p>
+        <h3 class="text-4xl font-bold mt-3">--</h3>
+      </div>
+    </section>
+
+    <section class="mt-8 bg-gray-900 border border-gray-800 rounded-2xl p-6">
+      <h3 class="text-xl font-semibold mb-4">Resumen</h3>
+      <p class="text-gray-400">
+        Desde este panel podrás registrar solicitudes de uso de GPU, consultar el estado de tus solicitudes y revisar tus reportes de uso.
+      </p>
+    </section>
+  </main>
+</div>

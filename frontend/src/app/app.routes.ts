@@ -6,6 +6,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { Requests } from './pages/requests/requests';
 import { Assignments } from './pages/assignments/assignments';
+import { ClientDashboard } from './pages/client-dashboard/client-dashboard';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+  path: 'client-dashboard',
+  component: ClientDashboard,
+  canActivate: [authGuard],
+  },
+  {
     path: 'requests',
     component: Requests,
     canActivate: [authGuard],
@@ -37,16 +43,19 @@ export const routes: Routes = [
     import('./pages/assignments/assignments').then(
       (m) => m.Assignments
     ),
+  canActivate: [authGuard],  
   },
   {
   path: 'reports',
   loadComponent: () =>
     import('./pages/reports/reports').then((m) => m.Reports),
+  canActivate: [authGuard],
   },
   {
   path: 'gpus',
   loadComponent: () =>
     import('./pages/gpus/gpus').then((m) => m.Gpus),
+  canActivate: [authGuard],
   },
 ];
 

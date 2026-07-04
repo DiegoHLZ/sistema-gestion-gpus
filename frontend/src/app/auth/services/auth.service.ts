@@ -20,4 +20,9 @@ export class AuthService {
       data
     );
   }
+  register(data: any): Observable<AuthResponse> {
+
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data);
+
+  }
 }

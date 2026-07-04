@@ -32,11 +32,15 @@ export class Login {
 
     this.authService.login(this.loginForm.value as any).subscribe({
       next: (response) => {
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('role', response.role);
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('role', response.role);
 
-      this.router.navigate(['/dashboard']);
-    },
+        if (response.role === 'ADMIN') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/client-dashboard']);
+        }
+      },
       error: () => {
         this.errorMessage = 'Correo o contraseña incorrectos';
       },

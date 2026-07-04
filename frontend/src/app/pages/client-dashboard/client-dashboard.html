@@ -3,17 +3,25 @@
     <h1 class="text-2xl font-bold mb-10">GPU Management</h1>
 
     <nav class="space-y-3">
-      <a class="block px-4 py-3 rounded-xl bg-blue-600">
+      <a
+        routerLink="/client-dashboard"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+        >
         Mi panel
-      </a>
+    </a>
+    <a
+    routerLink="/client-requests"
+    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+    >
+    Mis solicitudes
+    </a>
 
-      <a routerLink="/client-requests" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
-        Mis solicitudes
-      </a>
-
-      <a routerLink="/reports" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
-        Mis reportes
-      </a>
+    <a
+    routerLink="/client-reports"
+    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+    >
+    Mis reportes
+    </a>
     </nav>
   </aside>
 
@@ -37,17 +45,17 @@
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
         <p class="text-gray-400">Mis solicitudes</p>
-        <h3 class="text-4xl font-bold mt-3">--</h3>
+        <h3 class="text-4xl font-bold mt-3">{{ totalRequests }}</h3>
       </div>
 
       <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
         <p class="text-gray-400">Solicitudes aprobadas</p>
-        <h3 class="text-4xl font-bold mt-3">--</h3>
+        <h3 class="text-4xl font-bold mt-3">{{ approvedRequests }}</h3>
       </div>
 
       <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
         <p class="text-gray-400">Mis reportes</p>
-        <h3 class="text-4xl font-bold mt-3">--</h3>
+        <h3 class="text-4xl font-bold mt-3">{{ totalReports }}</h3>
       </div>
     </section>
 

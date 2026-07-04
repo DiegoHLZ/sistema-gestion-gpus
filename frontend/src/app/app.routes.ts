@@ -7,6 +7,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { Requests } from './pages/requests/requests';
 import { Assignments } from './pages/assignments/assignments';
 import { ClientDashboard } from './pages/client-dashboard/client-dashboard';
+import { ClientReports } from './pages/client-reports/client-reports';
 
 export const routes: Routes = [
   {
@@ -63,6 +64,11 @@ export const routes: Routes = [
     import('./pages/client-requests/client-requests').then(
       (m) => m.ClientRequests
     ),
+  canActivate: [authGuard],
+  },
+  {
+  path: 'client-reports',
+  component: ClientReports,
   canActivate: [authGuard],
   },
 ];

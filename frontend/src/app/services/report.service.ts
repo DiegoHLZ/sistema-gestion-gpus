@@ -16,6 +16,10 @@ export class ReportService {
     return this.http.get<UsageReport[]>(this.apiUrl);
   }
 
+  getMyReports(): Observable<UsageReport[]> {
+  return this.http.get<UsageReport[]>(`${this.apiUrl}/my-reports`);
+  }
+
   createReport(assignmentId: number, report: any): Observable<UsageReport> {
     return this.http.post<UsageReport>(
       `${this.apiUrl}?assignmentId=${assignmentId}`,

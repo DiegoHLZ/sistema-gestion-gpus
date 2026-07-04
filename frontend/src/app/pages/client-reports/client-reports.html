@@ -1,0 +1,122 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+
+      <a
+  routerLink="/client-dashboard"
+  class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+>
+  Mi panel
+</a>
+
+<a
+  routerLink="/client-requests"
+  class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+>
+  Mis solicitudes
+</a>
+
+<a
+  routerLink="/client-reports"
+  class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+>
+  Mis reportes
+</a>
+
+    </nav>
+
+  </aside>
+
+  <main class="ml-64 p-8">
+
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold">
+        Mis reportes
+      </h2>
+
+      <p class="text-gray-400 mt-2">
+        Consulta los reportes de uso asociados a tus asignaciones de GPU.
+      </p>
+    </div>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold">
+          Reportes registrados
+        </h3>
+
+        <span class="text-gray-400">
+          Total: {{ reports.length }}
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[900px] text-left">
+
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400">
+              <th class="pb-4 pr-6">Fecha</th>
+              <th class="pb-4 pr-6">GPU</th>
+              <th class="pb-4 pr-6">Proyecto</th>
+              <th class="pb-4 pr-6">Horas de uso</th>
+              <th class="pb-4 pr-6">Consumo estimado</th>
+              <th class="pb-4">Observación</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let report of reports"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+              <td class="py-4 pr-6 whitespace-nowrap">
+                {{ report.reportDate | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ report.gpu?.name }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ report.assignment?.request?.projectType }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ report.usageHours }} h
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ report.estimatedConsumption }}
+              </td>
+
+              <td class="py-4 max-w-xs">
+                {{ report.observation }}
+              </td>
+            </tr>
+
+            <tr *ngIf="reports.length === 0">
+              <td colspan="6" class="py-8 text-center text-gray-500">
+                Aún no tienes reportes registrados.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

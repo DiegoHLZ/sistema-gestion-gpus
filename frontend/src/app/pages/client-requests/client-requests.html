@@ -1,0 +1,160 @@
+<div class="min-h-screen bg-gray-950 text-white">
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+    <h1 class="text-2xl font-bold mb-10">GPU Management</h1>
+
+    <nav class="space-y-3">
+      <a routerLink="/client-dashboard" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mi panel
+      </a>
+
+      <a routerLink="/client-requests" class="block px-4 py-3 rounded-xl bg-blue-600">
+        Mis solicitudes
+      </a>
+
+      <a routerLink="/reports" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mis reportes
+      </a>
+    </nav>
+  </aside>
+
+  <main class="ml-64 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold">Mis solicitudes</h2>
+        <p class="text-gray-400 mt-1">
+          Registra y consulta tus solicitudes de uso de GPU.
+        </p>
+      </div>
+
+      <button
+        (click)="openCreateModal()"
+        class="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl font-semibold"
+      >
+        Nueva solicitud
+      </button>
+    </div>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold">Solicitudes registradas</h3>
+        <span class="text-gray-400">Total: {{ requests.length }}</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[950px] text-left">
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400">
+              <th class="pb-4 pr-6">Descripción</th>
+              <th class="pb-4 pr-6">Proyecto</th>
+              <th class="pb-4 pr-6">Cantidad GPUs</th>
+              <th class="pb-4 pr-6">Inicio</th>
+              <th class="pb-4 pr-6">Fin</th>
+              <th class="pb-4">Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let request of requests"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+              <td class="py-4 pr-6 max-w-xs">{{ request.description }}</td>
+              <td class="py-4 pr-6">{{ request.projectType }}</td>
+              <td class="py-4 pr-6">{{ request.gpuQuantity }}</td>
+              <td class="py-4 pr-6 whitespace-nowrap">{{ request.startDate }}</td>
+              <td class="py-4 pr-6 whitespace-nowrap">{{ request.endDate }}</td>
+
+              <td class="py-4">
+                <span
+                  class="px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="
+                    request.status === 'PENDING'
+                      ? 'bg-yellow-500/20 text-yellow-400'
+                      : request.status === 'APPROVED'
+                      ? 'bg-green-500/20 text-green-400'
+                      : request.status === 'COMPLETED'
+                      ? 'bg-blue-500/20 text-blue-400'
+                      : 'bg-red-500/20 text-red-400'
+                  "
+                >
+                  {{ request.status }}
+                </span>
+              </td>
+            </tr>
+
+            <tr *ngIf="requests.length === 0">
+              <td colspan="6" class="py-8 text-center text-gray-500">
+                Aún no tienes solicitudes registradas.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div
+    *ngIf="showCreateModal"
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+  >
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 w-full max-w-xl">
+      <h3 class="text-2xl font-bold mb-6">Nueva solicitud GPU</h3>
+
+      <form [formGroup]="requestForm" (ngSubmit)="createRequest()" class="space-y-5">
+        <input
+          type="text"
+          formControlName="description"
+          placeholder="Descripción"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+        />
+
+        <input
+          type="text"
+          formControlName="projectType"
+          placeholder="Tipo de proyecto"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+        />
+
+        <input
+          type="number"
+          min="1"
+          formControlName="gpuQuantity"
+          placeholder="Cantidad de GPUs"
+          class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+        />
+
+        <div class="grid grid-cols-2 gap-4">
+          <input
+            type="date"
+            formControlName="startDate"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+          />
+
+          <input
+            type="date"
+            formControlName="endDate"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3"
+          />
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-5 py-2 rounded-xl bg-gray-700 hover:bg-gray-600"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            [disabled]="requestForm.invalid"
+            class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 font-semibold"
+          >
+            Guardar solicitud
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

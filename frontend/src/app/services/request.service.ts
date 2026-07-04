@@ -16,6 +16,10 @@ export class RequestService {
     return this.http.get<GpuRequest[]>(this.apiUrl);
   }
 
+  getMyRequests(): Observable<GpuRequest[]> {
+  return this.http.get<GpuRequest[]>(`${this.apiUrl}/my-requests`);
+  }
+
   createRequest(request: any): Observable<GpuRequest> {
   return this.http.post<GpuRequest>(this.apiUrl, request);
   }

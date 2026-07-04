@@ -57,5 +57,13 @@ export const routes: Routes = [
     import('./pages/gpus/gpus').then((m) => m.Gpus),
   canActivate: [authGuard],
   },
+  {
+  path: 'client-requests',
+  loadComponent: () =>
+    import('./pages/client-requests/client-requests').then(
+      (m) => m.ClientRequests
+    ),
+  canActivate: [authGuard],
+  },
 ];
 

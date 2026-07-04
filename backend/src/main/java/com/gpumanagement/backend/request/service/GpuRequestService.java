@@ -5,6 +5,9 @@ import com.gpumanagement.backend.request.model.GpuRequest;
 import com.gpumanagement.backend.request.repository.GpuRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.gpumanagement.backend.user.model.User;
+import com.gpumanagement.backend.user.repository.UserRepository;
+import com.gpumanagement.backend.auth.service.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +17,15 @@ import java.util.List;
 public class GpuRequestService {
 
     private final GpuRequestRepository gpuRequestRepository;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     public List<GpuRequest> getAllRequests() {
         return gpuRequestRepository.findAll();
+    }
+
+    public List<GpuRequest> getMyRequests(String email) {
+        return gpuRequestRepository.findByUserEmail(email);
     }
 
     public GpuRequest getRequestById(Long id) {
@@ -24,7 +33,11 @@ public class GpuRequestService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
     }
 
-    public GpuRequest createRequest(GpuRequest request) {
+    public GpuRequest createRequest(GpuRequest request, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        request.setUser(user);
         request.setRequestDate(LocalDateTime.now());
 
         if (request.getStatus() == null) {
@@ -66,5 +79,9 @@ public class GpuRequestService {
     public void deleteRequest(Long id) {
         GpuRequest request = getRequestById(id);
         gpuRequestRepository.delete(request);
+    }
+
+    public String getEmailFromToken(String token) {
+        return jwtService.extractUsername(token);
     }
 }

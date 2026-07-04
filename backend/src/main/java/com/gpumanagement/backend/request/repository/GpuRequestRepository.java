@@ -11,4 +11,6 @@ public interface GpuRequestRepository extends JpaRepository<GpuRequest, Long> {
     List<GpuRequest> findByUserId(Long userId);
 
     List<GpuRequest> findByStatus(RequestStatus status);
+
+    List<GpuRequest> findByUserEmail(String email);
 }

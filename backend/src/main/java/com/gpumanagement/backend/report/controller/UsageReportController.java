@@ -5,6 +5,7 @@ import com.gpumanagement.backend.report.service.UsageReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -39,5 +40,17 @@ public class UsageReportController {
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
         usageReportService.deleteReport(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/my-reports")
+    public ResponseEntity<List<UsageReport>> getMyReports(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String email = usageReportService.getEmailFromToken(token);
+
+        return ResponseEntity.ok(
+                usageReportService.getMyReports(email)
+        );
     }
 }

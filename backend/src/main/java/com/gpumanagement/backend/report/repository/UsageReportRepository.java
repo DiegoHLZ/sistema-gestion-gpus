@@ -12,4 +12,6 @@ public interface UsageReportRepository extends JpaRepository<UsageReport, Long> 
     List<UsageReport> findByGpuId(Long gpuId);
 
     List<UsageReport> findByAssignmentId(Long assignmentId);
+
+    List<UsageReport> findByUserEmail(String email);
 }

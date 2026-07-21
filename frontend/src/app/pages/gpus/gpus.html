@@ -9,6 +9,7 @@
       >
         Dashboard
       </a>
+
       <a
         routerLink="/gpus"
         class="block px-4 py-3 rounded-xl bg-blue-600"
@@ -35,6 +36,13 @@
         class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
       >
         Reportes
+      </a>
+
+      <a
+        routerLink="/payments"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Pagos
       </a>
     </nav>
   </aside>
@@ -74,6 +82,7 @@
               <th class="pb-4 pr-6">Memoria</th>
               <th class="pb-4 pr-6">Cloud</th>
               <th class="pb-4 pr-6">Región</th>
+              <th class="pb-4 pr-6">Precio/hora</th>
               <th class="pb-4 pr-6">Estado</th>
               <th class="pb-4 text-right">Acciones</th>
             </tr>
@@ -89,6 +98,9 @@
               <td class="py-4 pr-6 whitespace-nowrap">{{ gpu.memory }} GB</td>
               <td class="py-4 pr-6">{{ gpu.providerCloud }}</td>
               <td class="py-4 pr-6">{{ gpu.region }}</td>
+              <td class="py-4 pr-6 whitespace-nowrap">
+                $ {{ gpu.pricePerHour || 0 }} / h
+              </td>
 
               <td class="py-4 pr-6">
                 <span
@@ -123,7 +135,7 @@
             </tr>
 
             <tr *ngIf="gpus.length === 0">
-              <td colspan="7" class="py-10 text-center text-gray-500">
+              <td colspan="8" class="py-10 text-center text-gray-500">
                 Aún no hay GPUs registradas.
               </td>
             </tr>
@@ -193,11 +205,25 @@
 
         <div>
           <label class="block mb-2 text-gray-300">Región</label>
-          <input
-            type="text"
+          <select
             formControlName="region"
-            placeholder="Ej. us-east-1"
             class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+          >
+            <option value="" disabled>Selecciona una región</option>
+            <option *ngFor="let region of regionOptions" [value]="region.value">
+              {{ region.label }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300">Precio por hora ($)</label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="pricePerHour"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-yellow-500"
           />
         </div>
 
@@ -278,9 +304,24 @@
 
         <div>
           <label class="block mb-2 text-gray-300">Región</label>
-          <input
-            type="text"
+          <select
             formControlName="region"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-yellow-500"
+          >
+            <option value="" disabled>Selecciona una región</option>
+            <option *ngFor="let region of regionOptions" [value]="region.value">
+              {{ region.label }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-2 text-gray-300">Precio por hora ($)</label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="pricePerHour"
             class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-yellow-500"
           />
         </div>

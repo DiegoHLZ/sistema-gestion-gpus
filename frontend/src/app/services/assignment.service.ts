@@ -23,6 +23,12 @@ export class AssignmentService {
     return this.http.get<GpuAssignment[]>(this.apiUrl);
   }
 
+  getMyActiveAssignments(): Observable<GpuAssignment[]> {
+  return this.http.get<GpuAssignment[]>(
+    `${this.apiUrl}/my-assignments`
+  );
+}
+
   assignGpu(requestId: number, gpuId: number): Observable<GpuAssignment> {
     return this.http.post<GpuAssignment>(
       `${this.apiUrl}/assign?requestId=${requestId}&gpuId=${gpuId}`,

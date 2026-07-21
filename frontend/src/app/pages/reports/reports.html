@@ -38,6 +38,13 @@
     >
         Reportes
     </a>
+
+    <a
+  routerLink="/payments"
+  class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+>
+  Pagos
+</a>
     </nav>
 
   </aside>
@@ -87,7 +94,7 @@
               <th class="pb-4 pr-6">GPU</th>
               <th class="pb-4 pr-6">Proyecto</th>
               <th class="pb-4 pr-6">Horas de uso</th>
-              <th class="pb-4 pr-6">Consumo estimado</th>
+              <th class="pb-4 pr-6">Costo estimado</th>
               <th class="pb-4 pr-6">Observación</th>
               <th class="pb-4">Acciones</th>
             </tr>
@@ -117,7 +124,7 @@
               </td>
 
               <td class="py-4 pr-6">
-                {{ report.estimatedConsumption }}
+                $ {{ report.estimatedCost || 0 }}
               </td>
 
               <td class="py-4 pr-6 max-w-xs">
@@ -180,7 +187,7 @@
 
         <div>
           <label class="block mb-2 text-gray-300">
-            Asignación activa
+            Asignación liberada
           </label>
 
           <select
@@ -192,45 +199,18 @@
             </option>
 
             <option
-              *ngFor="let assignment of activeAssignments"
+              *ngFor="let assignment of releasedAssignments"
               [ngValue]="assignment.id"
             >
               #{{ assignment.id }} — {{ assignment.gpu?.name }} — {{ assignment.request?.projectType }}
             </option>
           </select>
+          <p class="text-sm text-gray-500 mt-2">
+            Las horas de uso y el costo estimado se calcularán automáticamente según la fecha de asignación, fecha de liberación y tarifa por hora de la GPU.
+          </p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-
-          <div>
-            <label class="block mb-2 text-gray-300">
-              Horas de uso
-            </label>
-
-            <input
-              type="number"
-              min="0.1"
-              step="0.1"
-              formControlName="usageHours"
-              placeholder="Ej. 120"
-              class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label class="block mb-2 text-gray-300">
-              Consumo estimado
-            </label>
-
-            <input
-              type="number"
-              min="0"
-              step="0.01"
-              formControlName="estimatedConsumption"
-              placeholder="Ej. 340.80"
-              class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
 
         </div>
 
@@ -242,7 +222,7 @@
           <textarea
             rows="4"
             formControlName="observation"
-            placeholder="Describe el uso realizado con la GPU."
+            placeholder="Agrega una observación final sobre el uso realizado, incidencias o resultados del procesamiento."
             class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 resize-none"
           ></textarea>
         </div>

@@ -3,25 +3,24 @@
     <h1 class="text-2xl font-bold mb-10">GPU Management</h1>
 
     <nav class="space-y-3">
-      <a
-        routerLink="/client-dashboard"
-        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
-        >
+      <a routerLink="/client-dashboard" class="block px-4 py-3 rounded-xl bg-blue-600">
         Mi panel
-    </a>
-    <a
-    routerLink="/client-requests"
-    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
-    >
-    Mis solicitudes
-    </a>
+      </a>
 
-    <a
-    routerLink="/client-reports"
-    class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
-    >
-    Mis reportes
-    </a>
+      <a routerLink="/client-requests" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mis solicitudes
+      </a>
+
+      <a routerLink="/client-reports" class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800">
+        Mis reportes
+      </a>
+
+      <a
+  routerLink="/client-payments"
+  class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+>
+  Mis pagos
+</a>
     </nav>
   </aside>
 
@@ -30,7 +29,7 @@
       <div>
         <h2 class="text-3xl font-bold">Panel del cliente</h2>
         <p class="text-gray-400 mt-1">
-          Bienvenido a tu espacio de solicitudes y reportes GPU.
+          Consulta tus solicitudes, asignaciones activas y reportes de uso.
         </p>
       </div>
 
@@ -42,7 +41,7 @@
       </button>
     </div>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
         <p class="text-gray-400">Mis solicitudes</p>
         <h3 class="text-4xl font-bold mt-3">{{ totalRequests }}</h3>
@@ -54,16 +53,116 @@
       </div>
 
       <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Asignaciones activas</p>
+        <h3 class="text-4xl font-bold mt-3">{{ activeAssignments }}</h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
         <p class="text-gray-400">Mis reportes</p>
         <h3 class="text-4xl font-bold mt-3">{{ totalReports }}</h3>
       </div>
     </section>
 
+    <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <h3 class="text-xl font-semibold mb-5">Mis asignaciones activas</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b border-gray-800 text-gray-400">
+                <th class="pb-3 pr-4">GPU</th>
+                <th class="pb-3 pr-4">Proyecto</th>
+                <th class="pb-3 pr-4">Proveedor</th>
+                <th class="pb-3">Asignación</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let assignment of assignments" class="border-b border-gray-800">
+                <td class="py-3 pr-4">{{ assignment.gpu?.name }}</td>
+                <td class="py-3 pr-4">{{ assignment.request?.projectType }}</td>
+                <td class="py-3 pr-4">{{ assignment.gpu?.providerCloud }}</td>
+                <td class="py-3 whitespace-nowrap">
+                  {{ assignment.assignmentDate | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+              </tr>
+
+              <tr *ngIf="assignments.length === 0">
+                <td colspan="4" class="py-6 text-center text-gray-500">
+                  No tienes asignaciones activas.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <h3 class="text-xl font-semibold mb-5">Últimas solicitudes</h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b border-gray-800 text-gray-400">
+                <th class="pb-3 pr-4">Proyecto</th>
+                <th class="pb-3 pr-4">GPUs</th>
+                <th class="pb-3">Estado</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let request of recentRequests" class="border-b border-gray-800">
+                <td class="py-3 pr-4">{{ request.projectType }}</td>
+                <td class="py-3 pr-4">{{ request.gpuQuantity }}</td>
+                <td class="py-3">
+                  <span
+                    class="px-3 py-1 rounded-full text-sm font-medium"
+                    [ngClass]="
+                      request.status === 'PENDING'
+                        ? 'bg-yellow-500/20 text-yellow-400'
+                        : request.status === 'APPROVED'
+                        ? 'bg-green-500/20 text-green-400'
+                        : request.status === 'COMPLETED'
+                        ? 'bg-blue-500/20 text-blue-400'
+                        : 'bg-red-500/20 text-red-400'
+                    "
+                  >
+                    {{ request.status }}
+                  </span>
+                </td>
+              </tr>
+
+              <tr *ngIf="recentRequests.length === 0">
+                <td colspan="3" class="py-6 text-center text-gray-500">
+                  No tienes solicitudes recientes.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <section class="mt-8 bg-gray-900 border border-gray-800 rounded-2xl p-6">
-      <h3 class="text-xl font-semibold mb-4">Resumen</h3>
-      <p class="text-gray-400">
-        Desde este panel podrás registrar solicitudes de uso de GPU, consultar el estado de tus solicitudes y revisar tus reportes de uso.
-      </p>
+      <h3 class="text-xl font-semibold mb-4">Accesos rápidos</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a routerLink="/client-requests" class="bg-gray-800 hover:bg-gray-700 rounded-xl p-4 transition">
+          Crear o revisar solicitudes
+        </a>
+
+        <a routerLink="/client-reports" class="bg-gray-800 hover:bg-gray-700 rounded-xl p-4 transition">
+          Ver mis reportes
+        </a>
+
+        <a
+          routerLink="/client-payments"
+          class="bg-gray-800 hover:bg-gray-700 rounded-xl p-4 transition"
+        >
+          Ver mis pagos
+        </a>
+      </div>
     </section>
   </main>
 </div>

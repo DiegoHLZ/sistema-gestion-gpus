@@ -1,0 +1,142 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+      <a
+        routerLink="/client-dashboard"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Mi panel
+      </a>
+
+      <a
+        routerLink="/client-requests"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Mis solicitudes
+      </a>
+
+      <a
+        routerLink="/client-reports"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Mis reportes
+      </a>
+
+      <a
+        routerLink="/client-payments"
+        class="block px-4 py-3 rounded-xl bg-blue-600"
+      >
+        Mis pagos
+      </a>
+    </nav>
+  </aside>
+
+  <main class="ml-64 p-8">
+
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold">
+        Mis pagos
+      </h2>
+
+      <p class="text-gray-400 mt-2">
+        Consulta los pagos relacionados con tus reportes de uso.
+      </p>
+    </div>
+
+    <div
+      *ngIf="errorMessage"
+      class="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold">
+          Pagos registrados
+        </h3>
+
+        <span class="text-gray-400">
+          Total: {{ payments.length }}
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[1000px] text-left">
+
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400">
+              <th class="pb-4 pr-4">Fecha</th>
+              <th class="pb-4 pr-4">Proyecto</th>
+              <th class="pb-4 pr-4">GPU</th>
+              <th class="pb-4 pr-4">Monto</th>
+              <th class="pb-4 pr-4">Método</th>
+              <th class="pb-4 pr-4">Código</th>
+              <th class="pb-4">Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let payment of payments"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+              <td class="py-4 pr-4 whitespace-nowrap">
+                {{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td class="py-4 pr-4">
+                {{ payment.assignment.request?.projectType || 'Sin proyecto' }}
+              </td>
+
+              <td class="py-4 pr-4">
+                {{ payment.assignment.gpu?.name || 'Sin GPU' }}
+              </td>
+
+              <td class="py-4 pr-4 font-semibold whitespace-nowrap">
+                $ {{ payment.amount | number:'1.2-2' }}
+              </td>
+
+              <td class="py-4 pr-4">
+                {{ payment.paymentMethod }}
+              </td>
+
+              <td class="py-4 pr-4 font-mono text-sm">
+                {{ payment.transactionCode }}
+              </td>
+
+              <td class="py-4">
+                <span
+                  class="px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="getStatusClass(payment.status)"
+                >
+                  {{ getStatusLabel(payment.status) }}
+                </span>
+              </td>
+            </tr>
+
+            <tr *ngIf="payments.length === 0">
+              <td colspan="7" class="py-8 text-center text-gray-500">
+                Aún no tienes pagos registrados.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

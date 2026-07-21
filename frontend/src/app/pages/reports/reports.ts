@@ -24,7 +24,7 @@ import {
 })
 export class Reports implements OnInit {
   reports: UsageReport[] = [];
-  activeAssignments: GpuAssignment[] = [];
+  releasedAssignments: GpuAssignment[] = [];
 
   showCreateModal = false;
 
@@ -37,11 +37,6 @@ export class Reports implements OnInit {
   ) {
     this.reportForm = this.fb.group({
       assignmentId: [null, Validators.required],
-      usageHours: [null, [Validators.required, Validators.min(0.1)]],
-      estimatedConsumption: [
-        null,
-        [Validators.required, Validators.min(0)],
-      ],
       observation: ['', Validators.required],
     });
   }
@@ -62,8 +57,8 @@ export class Reports implements OnInit {
 
     this.assignmentService.getAllAssignments().subscribe({
       next: (data) => {
-        this.activeAssignments = data.filter(
-          (assignment) => assignment.active
+        this.releasedAssignments = data.filter(
+          (assignment) => !assignment.active && assignment.releaseDate !== null
         );
       },
       error: (err: any) => {
@@ -75,8 +70,6 @@ export class Reports implements OnInit {
   openCreateModal() {
     this.reportForm.reset({
       assignmentId: null,
-      usageHours: null,
-      estimatedConsumption: null,
       observation: '',
     });
 
@@ -95,8 +88,6 @@ export class Reports implements OnInit {
 
     const assignmentId = this.reportForm.value.assignmentId!;
     const reportData = {
-      usageHours: this.reportForm.value.usageHours,
-      estimatedConsumption: this.reportForm.value.estimatedConsumption,
       observation: this.reportForm.value.observation,
     };
 

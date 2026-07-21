@@ -1,0 +1,383 @@
+<div class="min-h-screen bg-gray-950 text-white">
+
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 p-6">
+
+    <h1 class="text-2xl font-bold mb-10">
+      GPU Management
+    </h1>
+
+    <nav class="space-y-3">
+
+      <a
+        routerLink="/dashboard"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/gpus"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        GPUs
+      </a>
+
+      <a
+        routerLink="/requests"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Solicitudes
+      </a>
+
+      <a
+        routerLink="/assignments"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Asignaciones
+      </a>
+
+      <a
+        routerLink="/reports"
+        class="block px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-800"
+      >
+        Reportes
+      </a>
+
+      <a
+  routerLink="/payments"
+  class="block px-4 py-3 rounded-xl bg-blue-600"
+>
+  Pagos
+</a>
+
+    </nav>
+
+  </aside>
+
+  <main class="ml-64 p-8">
+
+    <div class="flex items-center justify-between mb-8">
+
+      <div>
+        <h2 class="text-3xl font-bold">
+          Gestión de pagos
+        </h2>
+
+        <p class="text-gray-400 mt-2">
+          Genera y administra los pagos asociados a los reportes de uso.
+        </p>
+      </div>
+
+      <button
+        (click)="openCreateModal()"
+        class="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl font-semibold transition"
+      >
+        Nuevo pago
+      </button>
+
+    </div>
+
+    <div
+      *ngIf="errorMessage && !showCreateModal"
+      class="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Total de pagos</p>
+        <h3 class="text-4xl font-bold mt-3">
+          {{ payments.length }}
+        </h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Pagos pendientes</p>
+        <h3 class="text-4xl font-bold mt-3 text-yellow-400">
+          {{ pendingPaymentsCount }}
+        </h3>
+      </div>
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <p class="text-gray-400">Pagos completados</p>
+        <h3 class="text-4xl font-bold mt-3 text-green-400">
+          {{ paidPaymentsCount }}
+        </h3>
+      </div>
+
+    </section>
+
+    <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+      <div class="flex items-center justify-between mb-6">
+
+        <h3 class="text-xl font-bold">
+          Pagos registrados
+        </h3>
+
+        <span class="text-gray-400">
+          Total: {{ payments.length }}
+        </span>
+
+      </div>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[1250px] text-left">
+
+          <thead>
+
+            <tr class="border-b border-gray-800 text-gray-400">
+
+              <th class="pb-4 ">Fecha</th>
+              <th class="pb-4 ">Cliente</th>
+              <th class="pb-4 ">Empresa</th>
+              <th class="pb-4 ">Proyecto</th>
+              <th class="pb-4 ">GPU</th>
+              <th class="pb-4 ">Monto</th>
+              <th class="pb-4 ">Método</th>
+              <th class="pb-4 ">Código</th>
+              <th class="pb-4 ">Estado</th>
+              <th class="pb-4">Acciones</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let payment of payments"
+              class="border-b border-gray-800 hover:bg-gray-800/40 transition"
+            >
+
+              <td class="py-4 pr-6 whitespace-nowrap">
+                {{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <td class="py-4 pr-6 whitespace-nowrap">
+                {{ payment.user.firstName }}
+                {{ payment.user.lastName }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ payment.user.company || 'Sin empresa' }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ payment.assignment.request?.projectType || 'Sin proyecto' }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ payment.assignment.gpu?.name || 'Sin GPU' }}
+              </td>
+
+              <td class="py-4 pr-6 font-semibold whitespace-nowrap">
+                $ {{ payment.amount | number:'1.2-2' }}
+              </td>
+
+              <td class="py-4 pr-6">
+                {{ payment.paymentMethod }}
+              </td>
+
+              <td class="py-4 pr-6 font-mono text-sm">
+                {{ payment.transactionCode }}
+              </td>
+
+              <td class="py-4 pr-6">
+
+                <span
+                  class="px-3 py-1 rounded-full text-sm font-medium"
+                  [ngClass]="getStatusClass(payment.status)"
+                >
+                  {{ getStatusLabel(payment.status) }}
+                </span>
+
+              </td>
+
+              <td class="py-4 whitespace-nowrap">
+
+                <div class="flex gap-2">
+
+                  <button
+                    *ngIf="payment.status !== 'PAID'"
+                    (click)="updateStatus(payment, 'PAID')"
+                    class="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-sm font-semibold transition"
+                  >
+                    Marcar pagado
+                  </button>
+
+                  <button
+                    *ngIf="payment.status !== 'REJECTED'"
+                    (click)="updateStatus(payment, 'REJECTED')"
+                    class="px-3 py-2 rounded-lg bg-yellow-600 hover:bg-yellow-700 text-sm font-semibold transition"
+                  >
+                    Rechazar
+                  </button>
+
+                  <button
+                    (click)="deletePayment(payment.id)"
+                    class="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-sm font-semibold transition"
+                  >
+                    Eliminar
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr *ngIf="payments.length === 0">
+
+              <td colspan="10" class="py-8 text-center text-gray-500">
+                Aún no existen pagos registrados.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <div
+    *ngIf="showCreateModal"
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+  >
+
+    <div class="w-full max-w-xl bg-gray-900 border border-gray-800 rounded-2xl p-8">
+
+      <div class="flex items-center justify-between mb-6">
+
+        <h3 class="text-2xl font-bold">
+          Generar nuevo pago
+        </h3>
+
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="text-gray-400 hover:text-white text-2xl"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        *ngIf="errorMessage"
+        class="mb-5 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <form
+        [formGroup]="paymentForm"
+        (ngSubmit)="createPayment()"
+        class="space-y-5"
+      >
+
+        <div>
+
+          <label class="block mb-2 text-gray-300">
+            Reporte de uso
+          </label>
+
+          <select
+            formControlName="reportId"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+          >
+
+            <option [ngValue]="null">
+              Selecciona un reporte
+            </option>
+
+            <option
+              *ngFor="let report of availableReports"
+              [ngValue]="report.id"
+            >
+              #{{ report.id }}
+              — {{ report.gpu?.name }}
+              — {{ report.assignment?.request?.projectType }}
+              — $ {{ report.estimatedCost | number:'1.2-2' }}
+            </option>
+
+          </select>
+
+          <p class="text-sm text-gray-500 mt-2">
+            Solo aparecen reportes con usuario, asignación, costo y sin pago previo.
+          </p>
+
+        </div>
+
+        <div>
+
+          <label class="block mb-2 text-gray-300">
+            Método de pago
+          </label>
+
+          <select
+            formControlName="paymentMethod"
+            class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+          >
+
+            <option value="TRANSFER">
+              Transferencia bancaria
+            </option>
+
+            <option value="CREDIT_CARD">
+              Tarjeta de crédito
+            </option>
+
+            <option value="DEBIT_CARD">
+              Tarjeta de débito
+            </option>
+
+            <option value="DIGITAL_WALLET">
+              Billetera digital
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="bg-gray-800/60 rounded-xl p-4 text-sm text-gray-400">
+
+          El monto, el usuario, la asignación y el código de transacción se completarán automáticamente a partir del reporte seleccionado.
+
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-5 py-2 rounded-xl bg-gray-700 hover:bg-gray-600 transition"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            [disabled]="paymentForm.invalid"
+            class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition"
+          >
+            Generar pago
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

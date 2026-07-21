@@ -5,5 +5,6 @@ export interface Gpu {
   memory: number;
   providerCloud: string;
   region: string;
+  pricePerHour: number;
   available: boolean;
 }

@@ -21,6 +21,16 @@ export class Gpus implements OnInit {
 
   selectedGpuId: number | null = null;
 
+  regionOptions = [
+  { value: 'us-east-1', label: 'US East 1' },
+  { value: 'us-west-2', label: 'US West 2' },
+  { value: 'us-central1', label: 'US Central 1' },
+  { value: 'eastus', label: 'East US' },
+  { value: 'brazilsouth', label: 'Brazil South' },
+  { value: 'southamerica-west1', label: 'South America West 1' },
+  { value: 'lima-1', label: 'Lima 1' },
+];
+
   gpuForm;
 
   constructor(
@@ -33,6 +43,7 @@ export class Gpus implements OnInit {
       memory: [0, [Validators.required, Validators.min(1)]],
       providerCloud: ['', Validators.required],
       region: ['', Validators.required],
+      pricePerHour: [0, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -58,6 +69,7 @@ export class Gpus implements OnInit {
       memory: 0,
       providerCloud: '',
       region: '',
+      pricePerHour: 0,
     });
 
     this.showCreateModal = true;
@@ -72,6 +84,7 @@ export class Gpus implements OnInit {
       memory: gpu.memory,
       providerCloud: gpu.providerCloud,
       region: gpu.region,
+      pricePerHour: gpu.pricePerHour,
     });
 
     this.showEditModal = true;

@@ -8,6 +8,7 @@ import { Requests } from './pages/requests/requests';
 import { Assignments } from './pages/assignments/assignments';
 import { ClientDashboard } from './pages/client-dashboard/client-dashboard';
 import { ClientReports } from './pages/client-reports/client-reports';
+import { Payments } from './pages/payments/payments';
 
 export const routes: Routes = [
   {
@@ -71,5 +72,18 @@ export const routes: Routes = [
   component: ClientReports,
   canActivate: [authGuard],
   },
+  {
+  path: 'payments',
+  component: Payments,
+  canActivate: [authGuard],
+},
+{
+  path: 'client-payments',
+  loadComponent: () =>
+    import('./pages/client-payments/client-payments').then(
+      (m) => m.ClientPayments
+    ),
+  canActivate: [authGuard],
+},
 ];
 

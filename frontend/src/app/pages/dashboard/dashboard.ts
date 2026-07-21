@@ -17,6 +17,11 @@ import { GpuRequest } from '../../models/gpu-request.model';
 import { ReportService } from '../../services/report.service';
 import { UsageReport } from '../../models/report.model';
 
+import {
+  AssignmentService,
+  GpuAssignment,
+} from '../../services/assignment.service';
+
 Chart.register(...registerables);
 
 @Component({
@@ -30,6 +35,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
   gpus: Gpu[] = [];
   requests: GpuRequest[] = [];
   reports: UsageReport[] = [];
+  assignments: GpuAssignment[] = [];
 
   private gpuChart?: Chart;
   private requestChart?: Chart;
@@ -39,6 +45,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     private gpuService: GpuService,
     private requestService: RequestService,
     private reportService: ReportService,
+    private assignmentService: AssignmentService,
     private router: Router
   ) {}
 
@@ -60,6 +67,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     this.loadGpus();
     this.loadRequests();
     this.loadReports();
+    this.loadAssignments();
   }
 
   loadGpus() {
@@ -68,9 +76,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         this.gpus = data;
         this.renderCharts();
       },
-      error: (err: any) => {
-        console.error('Error al cargar GPUs:', err);
-      },
+      error: (err) => console.error('Error al cargar GPUs:', err),
     });
   }
 
@@ -80,9 +86,7 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         this.requests = data;
         this.renderCharts();
       },
-      error: (err: any) => {
-        console.error('Error al cargar solicitudes:', err);
-      },
+      error: (err) => console.error('Error al cargar solicitudes:', err),
     });
   }
 
@@ -91,9 +95,16 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
       next: (data) => {
         this.reports = data;
       },
-      error: (err: any) => {
-        console.error('Error al cargar reportes:', err);
+      error: (err) => console.error('Error al cargar reportes:', err),
+    });
+  }
+
+  loadAssignments() {
+    this.assignmentService.getAllAssignments().subscribe({
+      next: (data) => {
+        this.assignments = data;
       },
+      error: (err) => console.error('Error al cargar asignaciones:', err),
     });
   }
 
@@ -156,21 +167,10 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
 
     this.requestChart?.destroy();
 
-    const pending = this.requests.filter(
-      (request) => request.status === 'PENDING'
-    ).length;
-
-    const approved = this.requests.filter(
-      (request) => request.status === 'APPROVED'
-    ).length;
-
-    const rejected = this.requests.filter(
-      (request) => request.status === 'REJECTED'
-    ).length;
-
-    const completed = this.requests.filter(
-      (request) => request.status === 'COMPLETED'
-    ).length;
+    const pending = this.requests.filter((r) => r.status === 'PENDING').length;
+    const approved = this.requests.filter((r) => r.status === 'APPROVED').length;
+    const rejected = this.requests.filter((r) => r.status === 'REJECTED').length;
+    const completed = this.requests.filter((r) => r.status === 'COMPLETED').length;
 
     const config: ChartConfiguration<'bar'> = {
       type: 'bar',
@@ -190,12 +190,8 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
         maintainAspectRatio: false,
         scales: {
           x: {
-            ticks: {
-              color: '#d1d5db',
-            },
-            grid: {
-              display: false,
-            },
+            ticks: { color: '#d1d5db' },
+            grid: { display: false },
           },
           y: {
             beginAtZero: true,
@@ -203,15 +199,11 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
               color: '#d1d5db',
               precision: 0,
             },
-            grid: {
-              color: '#374151',
-            },
+            grid: { color: '#374151' },
           },
         },
         plugins: {
-          legend: {
-            display: false,
-          },
+          legend: { display: false },
         },
       },
     };
@@ -221,11 +213,20 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.router.navigate(['/login']);
+  }
+
+  get totalGpus(): number {
+    return this.gpus.length;
   }
 
   get availableGpus(): number {
     return this.gpus.filter((gpu) => gpu.available).length;
+  }
+
+  get gpusInUse(): number {
+    return this.gpus.filter((gpu) => !gpu.available).length;
   }
 
   get activeRequests(): number {
@@ -235,7 +236,37 @@ export class Dashboard implements OnInit, AfterViewInit, OnDestroy {
     ).length;
   }
 
+  get activeAssignments(): number {
+    return this.assignments.filter((assignment) => assignment.active).length;
+  }
+
   get generatedReports(): number {
     return this.reports.length;
+  }
+
+  get totalEstimatedConsumption(): number {
+    return this.reports.reduce(
+      (total, report) => total + (report.estimatedConsumption || 0),
+      0
+    );
+  }
+
+  get recentRequests(): GpuRequest[] {
+    return [...this.requests]
+      .sort((a: any, b: any) => {
+        return new Date(b.requestDate || '').getTime() - new Date(a.requestDate || '').getTime();
+      })
+      .slice(0, 5);
+  }
+
+  get recentAssignments(): GpuAssignment[] {
+    return [...this.assignments]
+      .sort((a, b) => {
+        return (
+          new Date(b.assignmentDate).getTime() -
+          new Date(a.assignmentDate).getTime()
+        );
+      })
+      .slice(0, 5);
   }
 }

@@ -9,6 +9,9 @@ import com.gpumanagement.backend.request.model.GpuRequest;
 import com.gpumanagement.backend.request.repository.GpuRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.gpumanagement.backend.user.model.User;
+import com.gpumanagement.backend.user.repository.UserRepository;
+import com.gpumanagement.backend.auth.service.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,9 +23,18 @@ public class GpuAssignmentService {
     private final GpuAssignmentRepository assignmentRepository;
     private final GpuRepository gpuRepository;
     private final GpuRequestRepository requestRepository;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     public List<GpuAssignment> getAllAssignments() {
         return assignmentRepository.findAll();
+    }
+
+    public List<GpuAssignment> getMyActiveAssignments(String email) {
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        return assignmentRepository.findByRequestUserEmailAndActiveTrue(email);
     }
 
     public GpuAssignment getAssignmentById(Long id) {
@@ -78,5 +90,9 @@ public class GpuAssignmentService {
     public void deleteAssignment(Long id) {
         GpuAssignment assignment = getAssignmentById(id);
         assignmentRepository.delete(assignment);
+    }
+
+    public String getEmailFromToken(String token) {
+        return jwtService.extractUsername(token);
     }
 }

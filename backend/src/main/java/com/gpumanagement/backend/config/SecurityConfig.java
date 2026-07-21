@@ -26,6 +26,8 @@ public class SecurityConfig {
                                 "/api/gpus/**",
                                 "/api/requests/**",
                                 "/api/assignments/**",
+                                "/api/reports/**",
+                                "/api/payments/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"

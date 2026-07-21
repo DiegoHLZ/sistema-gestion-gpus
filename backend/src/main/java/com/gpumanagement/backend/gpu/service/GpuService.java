@@ -37,6 +37,7 @@ public class GpuService {
         gpu.setMemory(gpuUpdated.getMemory());
         gpu.setProviderCloud(gpuUpdated.getProviderCloud());
         gpu.setRegion(gpuUpdated.getRegion());
+        gpu.setPricePerHour(gpuUpdated.getPricePerHour());
         gpu.setAvailable(gpuUpdated.getAvailable());
 
         return gpuRepository.save(gpu);

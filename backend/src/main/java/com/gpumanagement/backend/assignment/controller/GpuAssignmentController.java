@@ -20,6 +20,18 @@ public class GpuAssignmentController {
         return ResponseEntity.ok(assignmentService.getAllAssignments());
     }
 
+    @GetMapping("/my-assignments")
+    public ResponseEntity<List<GpuAssignment>> getMyAssignments(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        String email = assignmentService.getEmailFromToken(token);
+
+        return ResponseEntity.ok(
+                assignmentService.getMyActiveAssignments(email)
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<GpuAssignment> getAssignmentById(@PathVariable Long id) {
         return ResponseEntity.ok(assignmentService.getAssignmentById(id));

@@ -11,4 +11,6 @@ public interface GpuAssignmentRepository extends JpaRepository<GpuAssignment, Lo
     List<GpuAssignment> findByActiveTrue();
 
     Optional<GpuAssignment> findByRequestId(Long requestId);
+
+    List<GpuAssignment> findByRequestUserEmailAndActiveTrue(String email);
 }

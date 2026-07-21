@@ -27,6 +27,8 @@ public class UsageReport {
 
     private Double estimatedConsumption;
 
+    private Double estimatedCost;
+
     private String observation;
 
     @ManyToOne

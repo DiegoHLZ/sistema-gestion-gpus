@@ -26,5 +26,7 @@ public class Gpu {
 
     private String region;
 
+    private Double pricePerHour;
+
     private Boolean available;
 }
